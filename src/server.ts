@@ -1,10 +1,13 @@
 import { Server } from 'http';
+import 'reflect-metadata';
 import app from './app';
 import config from './config/config';
+import { TypeORM } from './config/database.config';
 
 let server: Server;
 
 const startServer = async () => {
+  await TypeORM.initialize();
   server = app.listen(config.port, () => {
     console.log(`Server running on port ${config.port}`);
   });
