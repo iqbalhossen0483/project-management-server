@@ -3,12 +3,19 @@ import { USER_ROLE, USER_STATUS } from '../types/common';
 
 const userSchema = new mongoose.Schema(
   {
-    name: String,
+    name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       unique: true,
+      required: true,
     },
-    password: String,
+    password: {
+      type: String,
+      required: true,
+    },
     role: {
       type: String,
       enum: USER_ROLE,
@@ -19,7 +26,10 @@ const userSchema = new mongoose.Schema(
       enum: USER_STATUS,
       default: USER_STATUS.ACTIVE,
     },
-    invitedAt: Date,
+    invitedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true },
 );

@@ -1,9 +1,50 @@
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import config from '../config/config';
 import statusCodes from '../config/statusCodes';
 import asyncHandler from '../libs/asyncHandle';
-import { User } from '../model/user.entity';
+import { User, UserDocument } from '../model/user.model';
 import { LoginDto, RegisterDto } from '../validations/auth.validations';
+
+const generateAccessToken = (user: UserDocument) => {
+  const payload = {
+    _id: user._id,
+    email: user.email,
+    role: user.role,
+  };
+
+  const token = jwt.sign(payload, config.tokenSecret, { expiresIn: '1d' });
+  return token;
+};
+const generateRefreshToken = (user: UserDocument) => {
+  const payload = {
+    _id: user._id,
+  };
+
+  const token = jwt.sign(payload, config.tokenSecret, { expiresIn: '7d' });
+  return token;
+};
+
+const setCookies = (
+  res: Response,
+  accessToken: string,
+  refreshToken: string,
+) => {
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+};
 
 export const register = asyncHandler(async (req, res) => {
   const payload: RegisterDto = req.body;
@@ -22,10 +63,17 @@ export const register = asyncHandler(async (req, res) => {
   const user = await User.create(payload);
   const { password, ...rest } = user.toObject();
 
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  setCookies(res, accessToken, refreshToken);
+
   res.status(statusCodes.CREATED).json({
     message: 'User created successfully',
     success: true,
     data: rest,
+    accessToken,
+    refreshToken,
   });
 });
 
@@ -51,9 +99,16 @@ export const login = asyncHandler(async (req, res) => {
 
   const { password, ...rest } = user.toObject();
 
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  setCookies(res, accessToken, refreshToken);
+
   res.status(statusCodes.OK).json({
     message: 'User logged in successfully',
     success: true,
     data: rest,
+    accessToken,
+    refreshToken,
   });
 });
