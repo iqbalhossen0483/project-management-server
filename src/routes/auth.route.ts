@@ -7,7 +7,9 @@ import {
   sendInvitationForRegistration,
 } from '../controllers/auth.controller';
 import { authenticationHandler } from '../middlewares/authenticationHandler';
+import authRoleHandler from '../middlewares/authRoleHandler';
 import validationHandler from '../middlewares/validationHandler';
+import { USER_ROLE } from '../types/common';
 import {
   loginSchema,
   registerSchema,
@@ -25,6 +27,7 @@ router.post('/refresh', refreshToken);
 router.post(
   '/send-invitation',
   authenticationHandler,
+  authRoleHandler(USER_ROLE.ADMIN),
   validationHandler(sendInvitationForRegistrationSchema),
   sendInvitationForRegistration,
 );
