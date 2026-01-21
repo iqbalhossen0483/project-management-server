@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config/config';
 import statusCodes from '../config/statusCodes';
 import asyncHandler from '../libs/asyncHandle';
@@ -119,5 +119,32 @@ export const logout = asyncHandler(async (req, res) => {
   res.status(statusCodes.OK).json({
     message: 'User logged out successfully',
     success: true,
+  });
+});
+
+export const refreshToken = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) {
+    throw {
+      status: statusCodes.UNAUTHORIZED,
+      message: 'You are not authorized to access this resource',
+    };
+  }
+  const payload = jwt.verify(refreshToken, config.tokenSecret) as JwtPayload;
+  const user = await User.findById(payload._id);
+  if (!user) {
+    throw {
+      status: statusCodes.UNAUTHORIZED,
+      message: 'You are not authorized to access this resource',
+    };
+  }
+  const accessToken = generateAccessToken(user);
+  const newRefreshToken = generateRefreshToken(user);
+  setCookies(res, accessToken, newRefreshToken);
+  res.status(statusCodes.OK).json({
+    message: 'Token refreshed successfully',
+    success: true,
+    accessToken,
+    refreshToken: newRefreshToken,
   });
 });
