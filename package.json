@@ -1,5 +1,5 @@
 {
-  "name": "rkb-business-server",
+  "name": "project-management-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,7 +16,7 @@
     "docker-dev-run": "docker run --rm -p 8080:8080 --env-file .env  -v $(pwd)/src:/usr/src/app/src rkb-business-server-dev"
   },
   "keywords": [],
-  "author": "",
+  "author": "Iqbal Hossen",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
@@ -41,8 +41,6 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "bull": "^4.16.5",
-    "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -51,10 +49,9 @@
     "helmet": "^8.1.0",
     "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.18.0",
     "morgan": "^1.10.1",
-    "multer": "^2.0.2",
-    "redis": "^5.8.2",
-    "streamifier": "^0.1.1"
+    "pg": "^8.17.2",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.28"
   }
 }
