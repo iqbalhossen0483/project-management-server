@@ -1,0 +1,20 @@
+# ---------- Dev Mode ----------
+FROM node:20-alpine
+
+# Install OS tools required by nodemon + TypeScript
+RUN apk add --no-cache bash
+
+WORKDIR /usr/src/app
+
+# Copy package files and install only dependencies (including devDependencies)
+COPY package*.json ./
+RUN npm install
+
+# Copy all source code
+COPY . .
+
+# Expose your dev port
+EXPOSE 8080
+
+# Run nodemon in watch mode
+CMD ["npm", "run", "dev"]
