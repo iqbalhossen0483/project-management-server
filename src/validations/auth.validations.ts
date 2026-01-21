@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { USER_ROLE } from '../types/common';
 
 export const registerSchema = z
   .object({
@@ -26,5 +27,15 @@ export const loginSchema = z
   })
   .strict();
 
+export const sendInvitationForRegistrationSchema = z
+  .object({
+    email: z.email('Invalid email address'),
+    role: z.enum(USER_ROLE).default(USER_ROLE.STAFF),
+  })
+  .strict();
+
 export type RegisterDto = z.infer<typeof registerSchema>;
 export type LoginDto = z.infer<typeof loginSchema>;
+export type SendInvitationForRegistrationDto = z.infer<
+  typeof sendInvitationForRegistrationSchema
+>;

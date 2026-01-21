@@ -4,8 +4,13 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config/config';
 import statusCodes from '../config/statusCodes';
 import asyncHandler from '../libs/asyncHandle';
+import { Invite } from '../model/invite.model';
 import { User, UserDocument } from '../model/user.model';
-import { LoginDto, RegisterDto } from '../validations/auth.validations';
+import {
+  LoginDto,
+  RegisterDto,
+  SendInvitationForRegistrationDto,
+} from '../validations/auth.validations';
 
 const generateAccessToken = (user: UserDocument) => {
   const payload = {
@@ -146,5 +151,31 @@ export const refreshToken = asyncHandler(async (req, res) => {
     success: true,
     accessToken,
     refreshToken: newRefreshToken,
+  });
+});
+
+export const sendInvitationForRegistration = asyncHandler(async (req, res) => {
+  const payload: SendInvitationForRegistrationDto = req.body;
+  const user = await User.findOne({ email: payload.email });
+  if (user) {
+    throw {
+      status: statusCodes.CONFLICT,
+      message: 'User already exists',
+    };
+  }
+
+  const token = jwt.sign(payload, config.tokenSecret, { expiresIn: '1d' });
+
+  const invitation = await Invite.create({
+    email: payload.email,
+    role: payload.role,
+    token,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  });
+
+  res.status(statusCodes.OK).json({
+    message: 'Invitation sent successfully',
+    success: true,
+    data: invitation,
   });
 });
