@@ -17,6 +17,8 @@ export const registerSchema = z
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
       ),
+
+    accessToken: z.string('accessToken is required'),
   })
   .strict();
 

@@ -4,7 +4,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config/config';
 import statusCodes from '../config/statusCodes';
 import asyncHandler from '../libs/asyncHandle';
-import { Invite } from '../model/invite.model';
+import { Invite, InviteDocument } from '../model/invite.model';
 import { User, UserDocument } from '../model/user.model';
 import {
   LoginDto,
@@ -51,8 +51,39 @@ const setCookies = (
   });
 };
 
+const checkAuthorizedToken = async (
+  payload: RegisterDto,
+): Promise<InviteDocument | null> => {
+  if (!payload.accessToken) {
+    return null;
+  }
+  const decoded = jwt.verify(
+    payload.accessToken,
+    config.tokenSecret,
+  ) as SendInvitationForRegistrationDto;
+
+  if (payload.email !== decoded.email) {
+    return null;
+  }
+
+  const invitation = await Invite.findOne({ token: payload.accessToken });
+  if (!invitation) {
+    return null;
+  }
+
+  return invitation;
+};
+
 export const register = asyncHandler(async (req, res) => {
   const payload: RegisterDto = req.body;
+
+  const invitation = await checkAuthorizedToken(payload);
+  if (!invitation) {
+    throw {
+      status: statusCodes.UNAUTHORIZED,
+      message: 'You are not authorized to access this resource',
+    };
+  }
 
   const isExist = await User.findOne({ email: payload.email });
   if (isExist) {
@@ -65,7 +96,7 @@ export const register = asyncHandler(async (req, res) => {
   const hasedPassword = await bcrypt.hash(payload.password, 10);
   payload.password = hasedPassword;
 
-  const user = await User.create(payload);
+  const user = await User.create({ ...payload, role: invitation.role });
   const { password, ...rest } = user.toObject();
 
   const accessToken = generateAccessToken(user);

@@ -3,15 +3,27 @@ import { USER_ROLE } from '../types/common';
 
 const inviteSchema = new mongoose.Schema(
   {
-    email: String,
+    email: {
+      type: String,
+      required: true,
+    },
     role: {
       type: String,
       enum: USER_ROLE,
       default: USER_ROLE.STAFF,
     },
-    token: String,
-    expiresAt: Date,
-    acceptedAt: Date,
+    token: {
+      type: String,
+      required: true,
+    },
+    expiresAt: {
+      type: Date,
+      required: true,
+    },
+    acceptedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );
@@ -22,5 +34,5 @@ export type InviteDocument = mongoose.Document & {
   role: USER_ROLE;
   token: string;
   expiresAt: Date;
-  acceptedAt: Date;
+  acceptedAt?: Date | null;
 };
