@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
-import { UserRole } from '../config/app.config';
 import config from '../config/config';
 import statusCodes from '../config/statusCodes';
 import { JwtUser } from '../types/express/express';

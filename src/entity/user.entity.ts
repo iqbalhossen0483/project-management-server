@@ -5,6 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { USER_ROLE, USER_STATUS } from '../types/common';
 import { Project } from './project.entity';
 
 @Entity('users')

@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { USER_ROLE } from '../types/common';
 
 @Entity('invites')
 export class Invite {

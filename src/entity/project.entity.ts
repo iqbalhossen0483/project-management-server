@@ -3,9 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PROJECT_STATUS } from '../types/common';
 import { User } from './user.entity';
 
 @Entity('projects')
@@ -22,7 +25,8 @@ export class Project {
   @Column({ default: PROJECT_STATUS.ACTIVE })
   status: PROJECT_STATUS;
 
-  @Column()
+  @ManyToOne(() => User, (user) => user.projects)
+  @JoinColumn({ name: 'createdBy' })
   createdBy: User;
 
   @CreateDateColumn()

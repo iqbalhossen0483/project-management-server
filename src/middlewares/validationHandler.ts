@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import joi from 'joi';
+import { ZodError, ZodObject } from 'zod';
 import statusCodes from '../config/statusCodes';
 
 type ValidationTypes = {
@@ -14,22 +14,23 @@ export const validationTypes: ValidationTypes = {
 };
 
 const validationHandler = (
-  schema: joi.ObjectSchema,
+  schema: ZodObject,
   type: keyof ValidationTypes = 'body',
 ) => {
   return (req: Request, _res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req[type], {
-      abortEarly: false,
-      allowUnknown: false,
-    });
-    if (error) {
-      throw {
-        status: statusCodes.BAD_REQUEST,
-        message: error.details[0].message,
-        success: false,
-      };
+    try {
+      schema.parse(req[type]);
+      next();
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw {
+          status: statusCodes.BAD_REQUEST,
+          success: false,
+          message: JSON.parse(error.message)[0].message,
+        };
+      }
+      next(error);
     }
-    next();
   };
 };
 

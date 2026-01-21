@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { UserRole } from '../config/app.config';
 import statusCodes from '../config/statusCodes';
 
-const authRoleHandler = (role: UserRole | UserRole[] = UserRole.Admin) => {
+const authRoleHandler = (role: USER_ROLE | USER_ROLE[] = USER_ROLE.ADMIN) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (
       !req.user ||

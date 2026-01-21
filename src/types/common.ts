@@ -1,15 +1,15 @@
-enum USER_ROLE {
+export enum USER_ROLE {
   ADMIN = 'ADMIN',
   MANAGER = 'MANAGER',
   STAFF = 'STAFF',
 }
 
-enum USER_STATUS {
+export enum USER_STATUS {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
 }
 
-enum PROJECT_STATUS {
+export enum PROJECT_STATUS {
   ACTIVE = 'ACTIVE',
   ARCHIVED = 'ARCHIVED',
   DELETED = 'DELETED',

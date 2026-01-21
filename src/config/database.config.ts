@@ -1,4 +1,7 @@
 import { DataSource } from 'typeorm';
+import { Invite } from '../entity/invite.entity';
+import { Project } from '../entity/project.entity';
+import { User } from '../entity/user.entity';
 import config from './config';
 
 export const TypeORM = new DataSource({
@@ -8,7 +11,7 @@ export const TypeORM = new DataSource({
   username: config.database.username,
   password: config.database.password,
   database: config.database.database,
-  entities: ['src/entity/*.js'],
+  entities: [User, Project, Invite],
   logging: true,
   synchronize: true,
 });
