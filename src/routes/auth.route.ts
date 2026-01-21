@@ -1,5 +1,6 @@
 import express from 'express';
 import { login, logout, register } from '../controllers/auth.controller';
+import { authenticationHandler } from '../middlewares/authenticationHandler';
 import validationHandler from '../middlewares/validationHandler';
 import { loginSchema, registerSchema } from '../validations/auth.validations';
 
@@ -9,6 +10,6 @@ router.post('/register', validationHandler(registerSchema), register);
 
 router.post('/login', validationHandler(loginSchema), login);
 
-router.post('/logout', logout);
+router.post('/logout', authenticationHandler, logout);
 
 export default router;

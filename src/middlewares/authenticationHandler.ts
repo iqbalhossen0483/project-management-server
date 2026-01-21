@@ -16,8 +16,8 @@ export const authenticationHandler = async (
       req.headers.authorization.startsWith('Bearer')
     ) {
       token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.token) {
-      token = req.cookies.token;
+    } else if (req.cookies.accessToken) {
+      token = req.cookies.accessToken;
     }
 
     if (!token) {
@@ -27,13 +27,6 @@ export const authenticationHandler = async (
       };
     }
     const decoded = verify(token, config.tokenSecret);
-
-    if (typeof decoded === 'string' || !decoded.id) {
-      throw {
-        status: statusCodes.UNAUTHORIZED,
-        message: 'You are not authorized to access this resource',
-      };
-    }
 
     req.user = decoded as JwtPayload & JwtUser;
     next();
