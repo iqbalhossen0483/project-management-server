@@ -112,3 +112,12 @@ export const login = asyncHandler(async (req, res) => {
     refreshToken,
   });
 });
+
+export const logout = asyncHandler(async (req, res) => {
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+  res.status(statusCodes.OK).json({
+    message: 'User logged out successfully',
+    success: true,
+  });
+});
