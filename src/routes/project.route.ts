@@ -2,6 +2,7 @@ import express from 'express';
 import {
   getAllProjects,
   postProject,
+  softDeleteProject,
   updateProject,
 } from '../controllers/project.controller';
 import authRoleHandler from '../middlewares/authRoleHandler';
@@ -21,6 +22,12 @@ router.put(
   authRoleHandler(USER_ROLE.ADMIN),
   validationHandler(updateProjectSchema),
   updateProject,
+);
+
+router.delete(
+  '/delete/:id',
+  authRoleHandler(USER_ROLE.ADMIN),
+  softDeleteProject,
 );
 
 export default router;

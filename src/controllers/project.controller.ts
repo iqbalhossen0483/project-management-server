@@ -64,3 +64,23 @@ export const updateProject = asyncHandler(async (req, res) => {
     data: project,
   });
 });
+
+export const softDeleteProject = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const project = await Project.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true },
+  );
+  if (!project) {
+    throw {
+      status: statusCodes.NOT_FOUND,
+      message: 'Project not found',
+    };
+  }
+  res.status(statusCodes.OK).json({
+    message: 'Project deleted successfully',
+    success: true,
+    data: project,
+  });
+});
