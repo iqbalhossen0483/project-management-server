@@ -6,6 +6,7 @@ import statusCodes from '../config/statusCodes';
 import asyncHandler from '../libs/asyncHandle';
 import { Invite, InviteDocument } from '../model/invite.model';
 import { User, UserDocument } from '../model/user.model';
+import { sendInvitationEmail } from '../services/sendInvitationEmail';
 import { USER_STATUS } from '../types/common';
 import {
   LoginDto,
@@ -211,6 +212,9 @@ export const sendInvitationForRegistration = asyncHandler(async (req, res) => {
     token,
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
+
+  const inviteLink = `${config.clientUrl}/register?accessToken=${token}&email=${payload.email}&role=${invitation.role}`;
+  await sendInvitationEmail(inviteLink);
 
   res.status(statusCodes.OK).json({
     message: 'Invitation sent successfully',
