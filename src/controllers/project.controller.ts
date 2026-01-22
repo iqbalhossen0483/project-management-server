@@ -10,7 +10,7 @@ export const getAllProjects = asyncHandler(async (req, res) => {
   const limit = Number(req.query.limit) || config.dataPerPage;
   const skip = (page - 1) * limit;
 
-  const projects = await Project.find()
+  const projects = await Project.find({ isDeleted: false })
     .populate('user', '_id name email role status')
     .skip(skip)
     .limit(limit);
