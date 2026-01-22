@@ -42,8 +42,28 @@ export const updateUserRole = asyncHandler(async (req, res) => {
   user.role = role;
   const updatedUser = await user.save();
   const { password, ...rest } = updatedUser.toObject();
-  res.status(200).json({
+  res.status(statusCodes.OK).json({
     message: 'User role updated successfully',
+    success: true,
+    data: rest,
+  });
+});
+
+export const updateUserStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const user = await User.findById(id);
+  if (!user) {
+    throw {
+      status: statusCodes.NOT_FOUND,
+      message: 'User not found',
+    };
+  }
+  user.status = status;
+  const updatedUser = await user.save();
+  const { password, ...rest } = updatedUser.toObject();
+  res.status(statusCodes.OK).json({
+    message: 'User status updated successfully',
     success: true,
     data: rest,
   });

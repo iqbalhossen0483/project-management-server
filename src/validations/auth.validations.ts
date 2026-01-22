@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { USER_ROLE } from '../types/common';
+import { USER_ROLE, USER_STATUS } from '../types/common';
 
 export const registerSchema = z
   .object({
@@ -38,7 +38,13 @@ export const sendInvitationForRegistrationSchema = z
 
 export const updateUserRoleSchema = z
   .object({
-    role: z.enum(USER_ROLE),
+    role: z.enum(USER_ROLE, 'Role is required'),
+  })
+  .strict();
+
+export const updateUserStatusSchema = z
+  .object({
+    status: z.enum(USER_STATUS, 'Status is required'),
   })
   .strict();
 

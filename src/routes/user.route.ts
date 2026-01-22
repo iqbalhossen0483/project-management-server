@@ -1,7 +1,14 @@
 import express from 'express';
-import { getAllUsers, updateUserRole } from '../controllers/user.controller';
+import {
+  getAllUsers,
+  updateUserRole,
+  updateUserStatus,
+} from '../controllers/user.controller';
 import validationHandler from '../middlewares/validationHandler';
-import { updateUserRoleSchema } from '../validations/auth.validations';
+import {
+  updateUserRoleSchema,
+  updateUserStatusSchema,
+} from '../validations/auth.validations';
 
 const router = express.Router();
 
@@ -10,6 +17,11 @@ router.patch(
   '/:id/role',
   validationHandler(updateUserRoleSchema),
   updateUserRole,
+);
+router.patch(
+  '/:id/status',
+  validationHandler(updateUserStatusSchema),
+  updateUserStatus,
 );
 
 export default router;
