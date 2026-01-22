@@ -13,9 +13,17 @@ export const getAllUsers = asyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit);
 
+  const total = await User.countDocuments({ _id: { $ne: currentUser } });
+
   res.status(200).json({
     message: 'Users fetched successfully',
     success: true,
     data: users,
+    meta: {
+      current_page: page,
+      last_page: Math.ceil(total / limit),
+      per_page: limit,
+      total_data: total,
+    },
   });
 });
