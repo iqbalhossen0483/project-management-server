@@ -1,4 +1,5 @@
 import config from '../config/config';
+import statusCodes from '../config/statusCodes';
 import asyncHandler from '../libs/asyncHandle';
 import { User } from '../model/user.model';
 
@@ -25,5 +26,25 @@ export const getAllUsers = asyncHandler(async (req, res) => {
       per_page: limit,
       total_data: total,
     },
+  });
+});
+
+export const updateUserRole = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+  const user = await User.findById(id);
+  if (!user) {
+    throw {
+      status: statusCodes.NOT_FOUND,
+      message: 'User not found',
+    };
+  }
+  user.role = role;
+  const updatedUser = await user.save();
+  const { password, ...rest } = updatedUser.toObject();
+  res.status(200).json({
+    message: 'User role updated successfully',
+    success: true,
+    data: rest,
   });
 });

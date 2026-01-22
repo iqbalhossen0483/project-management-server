@@ -36,6 +36,12 @@ export const sendInvitationForRegistrationSchema = z
   })
   .strict();
 
+export const updateUserRoleSchema = z
+  .object({
+    role: z.enum(USER_ROLE),
+  })
+  .strict();
+
 export type RegisterDto = z.infer<typeof registerSchema>;
 export type LoginDto = z.infer<typeof loginSchema>;
 export type SendInvitationForRegistrationDto = z.infer<
