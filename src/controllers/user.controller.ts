@@ -32,6 +32,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 export const updateUserRole = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
+  const currentUser = req.user;
   const user = await User.findById(id);
   if (!user) {
     throw {
@@ -39,6 +40,14 @@ export const updateUserRole = asyncHandler(async (req, res) => {
       message: 'User not found',
     };
   }
+
+  if (currentUser?.email === user.email) {
+    throw {
+      status: statusCodes.UNAUTHORIZED,
+      message: 'You are not authorized to access this resource',
+    };
+  }
+
   user.role = role;
   const updatedUser = await user.save();
   const { password, ...rest } = updatedUser.toObject();
@@ -52,6 +61,7 @@ export const updateUserRole = asyncHandler(async (req, res) => {
 export const updateUserStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
+  const currentUser = req.user;
   const user = await User.findById(id);
   if (!user) {
     throw {
@@ -59,6 +69,14 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
       message: 'User not found',
     };
   }
+
+  if (currentUser?.email === user.email) {
+    throw {
+      status: statusCodes.UNAUTHORIZED,
+      message: 'You are not authorized to access this resource',
+    };
+  }
+
   user.status = status;
   const updatedUser = await user.save();
   const { password, ...rest } = updatedUser.toObject();
