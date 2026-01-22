@@ -6,6 +6,7 @@ import statusCodes from '../config/statusCodes';
 import asyncHandler from '../libs/asyncHandle';
 import { Invite, InviteDocument } from '../model/invite.model';
 import { User, UserDocument } from '../model/user.model';
+import { USER_STATUS } from '../types/common';
 import {
   LoginDto,
   RegisterDto,
@@ -122,6 +123,13 @@ export const login = asyncHandler(async (req, res) => {
     throw {
       status: statusCodes.UNAUTHORIZED,
       message: 'Invalid credentials or user does not exist',
+    };
+  }
+
+  if (user.status === USER_STATUS.INACTIVE) {
+    throw {
+      status: statusCodes.UNAUTHORIZED,
+      message: 'User is suspended',
     };
   }
 
