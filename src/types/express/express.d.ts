@@ -1,8 +1,9 @@
 import { JwtPayload } from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import { UserDesignation } from '../../models/User';
 
 export interface JwtUser {
-  id: number;
+  _id: mongoose.Types.ObjectId;
   email: string;
   role: UserDesignation;
 }

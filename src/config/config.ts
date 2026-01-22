@@ -9,6 +9,7 @@ interface Config {
   corsOrigin: string[];
   tokenSecret: string;
   mongoUrl: string;
+  dataPerPage: number;
 }
 
 const config: Config = {
@@ -20,6 +21,7 @@ const config: Config = {
     : ['http://localhost:3000'],
   tokenSecret: process.env.JWT_SECRET || 'secret',
   mongoUrl: process.env.MONGO_URL || 'mongodb://localhost:27017',
+  dataPerPage: Number(process.env.DATA_PER_PAGE) || 10,
 };
 
 export default config;
