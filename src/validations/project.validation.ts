@@ -22,4 +22,21 @@ export const createProjectSchema = z
   })
   .strict();
 
+export const updateProjectSchema = z
+  .object({
+    name: z
+      .string('Title must be string')
+      .min(3, 'Title must be at least 3 characters')
+      .max(30, 'Title must be at most 30 characters')
+      .optional(),
+    description: z
+      .string('Description must be string')
+      .min(3, 'Description must be at least 3 characters')
+      .max(300, 'Description must be at most 100 characters')
+      .optional(),
+    status: z.enum(PROJECT_STATUS).optional(),
+  })
+  .strict();
+
 export type CreateProjectSchema = z.infer<typeof createProjectSchema>;
+export type UpdateProjectSchema = z.infer<typeof updateProjectSchema>;

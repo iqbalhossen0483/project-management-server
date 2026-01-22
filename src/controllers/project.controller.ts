@@ -3,6 +3,7 @@ import statusCodes from '../config/statusCodes';
 import asyncHandler from '../libs/asyncHandle';
 import Project from '../model/project.model';
 import { User } from '../model/user.model';
+import { UpdateProjectSchema } from '../validations/project.validation';
 
 export const getAllProjects = asyncHandler(async (req, res) => {
   const page = Number(req.query.page) || 1;
@@ -41,6 +42,24 @@ export const postProject = asyncHandler(async (req, res) => {
   const project = await Project.create(req.body);
   res.status(statusCodes.CREATED).json({
     message: 'Project created successfully',
+    success: true,
+    data: project,
+  });
+});
+
+export const updateProject = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const payload: UpdateProjectSchema = req.body;
+  const project = await Project.findByIdAndUpdate(id, payload, { new: true });
+
+  if (!project) {
+    throw {
+      status: statusCodes.NOT_FOUND,
+      message: 'Project not found',
+    };
+  }
+  res.status(statusCodes.OK).json({
+    message: 'Project updated successfully',
     success: true,
     data: project,
   });
