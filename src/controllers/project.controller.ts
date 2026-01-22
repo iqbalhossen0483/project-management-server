@@ -30,6 +30,22 @@ export const getAllProjects = asyncHandler(async (req, res) => {
   });
 });
 
+export const getSingleProject = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const project = await Project.findById(id);
+  if (!project) {
+    throw {
+      status: statusCodes.NOT_FOUND,
+      message: 'Project not found',
+    };
+  }
+  res.status(statusCodes.OK).json({
+    message: 'Project fetched successfully',
+    success: true,
+    data: project,
+  });
+});
+
 export const postProject = asyncHandler(async (req, res) => {
   const isUserExist = await User.findById(req.body.createdBy);
   if (!isUserExist) {

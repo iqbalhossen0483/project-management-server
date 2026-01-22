@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getAllProjects,
+  getSingleProject,
   postProject,
   softDeleteProject,
   updateProject,
@@ -16,6 +17,7 @@ import {
 const router = express.Router();
 
 router.get('/all', getAllProjects);
+router.get('/get-single/:id', getSingleProject);
 router.post('/create', validationHandler(createProjectSchema), postProject);
 router.put(
   '/update/:id',
