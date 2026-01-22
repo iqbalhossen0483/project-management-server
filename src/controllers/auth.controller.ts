@@ -98,13 +98,23 @@ export const register = asyncHandler(async (req, res) => {
   const hasedPassword = await bcrypt.hash(payload.password, 10);
   payload.password = hasedPassword;
 
-  const user = await User.create({ ...payload, role: invitation.role });
+  const user = await User.create({
+    ...payload,
+    role: invitation.role,
+    invitedAt: invitation.createdAt,
+  });
   const { password, ...rest } = user.toObject();
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
   setCookies(res, accessToken, refreshToken);
+
+  //update invite
+  await Invite.updateOne(
+    { _id: invitation._id },
+    { $set: { acceptedAt: new Date() } },
+  );
 
   res.status(statusCodes.CREATED).json({
     message: 'User created successfully',
@@ -213,7 +223,7 @@ export const sendInvitationForRegistration = asyncHandler(async (req, res) => {
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
 
-  const inviteLink = `${config.clientUrl}/register?accessToken=${token}&email=${payload.email}&role=${invitation.role}`;
+  const inviteLink = `${config.clientUrl}/auth/signup?accessToken=${token}&email=${payload.email}&role=${invitation.role}`;
   await sendInvitationEmail(inviteLink);
 
   res.status(statusCodes.OK).json({

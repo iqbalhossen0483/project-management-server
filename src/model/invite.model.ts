@@ -35,4 +35,6 @@ export type InviteDocument = mongoose.Document & {
   token: string;
   expiresAt: Date;
   acceptedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
