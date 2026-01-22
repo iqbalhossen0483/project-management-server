@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  getProfile,
   login,
   logout,
   refreshToken,
@@ -31,6 +32,8 @@ router.post(
   validationHandler(sendInvitationForRegistrationSchema),
   sendInvitationForRegistration,
 );
+
+router.get('/me', authenticationHandler, getProfile);
 
 router.post('/logout', authenticationHandler, logout);
 

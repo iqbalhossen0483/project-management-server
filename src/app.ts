@@ -23,6 +23,8 @@ app.use(
   }),
 );
 
+console.log(config.corsOrigin);
+
 // Rate limiter
 app.use(createRateLimiter(100));
 

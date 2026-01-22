@@ -222,3 +222,20 @@ export const sendInvitationForRegistration = asyncHandler(async (req, res) => {
     data: invitation,
   });
 });
+
+export const getProfile = asyncHandler(async (req, res) => {
+  const user = req.user as JwtPayload;
+  const isExist = await User.findById(user._id);
+  if (!isExist) {
+    throw {
+      status: statusCodes.NOT_FOUND,
+      message: 'User not found',
+    };
+  }
+  const { password, ...rest } = isExist.toObject();
+  res.status(statusCodes.OK).json({
+    message: 'User profile fetched successfully',
+    success: true,
+    data: rest,
+  });
+});
