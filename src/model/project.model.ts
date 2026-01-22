@@ -3,8 +3,14 @@ import { PROJECT_STATUS } from '../types/common';
 
 const projectSchema = new mongoose.Schema(
   {
-    name: String,
-    description: String,
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       enum: PROJECT_STATUS,
@@ -21,6 +27,29 @@ const projectSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+projectSchema.virtual('user', {
+  ref: 'User',
+  localField: 'createdBy',
+  foreignField: '_id',
+  justOne: true,
+});
+projectSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform(_, ret: any) {
+    delete ret.id;
+    return ret;
+  },
+});
+
+projectSchema.set('toObject', {
+  virtuals: true,
+  transform(_, ret: any) {
+    delete ret.id;
+    return ret;
+  },
+});
 
 const Project = mongoose.model('Project', projectSchema);
 export default Project;

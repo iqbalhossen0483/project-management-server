@@ -3,6 +3,7 @@ import { authenticationHandler } from '../middlewares/authenticationHandler';
 import authRoleHandler from '../middlewares/authRoleHandler';
 import { USER_ROLE } from '../types/common';
 import authRoute from './auth.route';
+import projectRoute from './project.route';
 import userRoute from './user.route';
 const router = express.Router();
 
@@ -13,12 +14,15 @@ router.get('/', (_req, res) => {
 // Routes
 router.use('/auth', authRoute);
 
-// Protected and admin routes
+// Protected and only admin routes
 router.use(
   '/user',
   authenticationHandler,
   authRoleHandler(USER_ROLE.ADMIN),
   userRoute,
 );
+
+// Protected routes
+router.use('/project', authenticationHandler, projectRoute);
 
 export default router;
