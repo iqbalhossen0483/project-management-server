@@ -224,7 +224,11 @@ export const sendInvitationForRegistration = asyncHandler(async (req, res) => {
   });
 
   const invitationLink = `${config.clientUrl}/auth/signup?accessToken=${token}&email=${payload.email}&role=${invitation.role}`;
-  await sendInvitationEmail(invitationLink);
+  try {
+    await sendInvitationEmail(invitationLink);
+  } catch (error) {
+    console.log(error);
+  }
 
   res.status(statusCodes.OK).json({
     message: 'Invitation sent successfully',
