@@ -223,13 +223,14 @@ export const sendInvitationForRegistration = asyncHandler(async (req, res) => {
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
 
-  const inviteLink = `${config.clientUrl}/auth/signup?accessToken=${token}&email=${payload.email}&role=${invitation.role}`;
-  await sendInvitationEmail(inviteLink);
+  const invitationLink = `${config.clientUrl}/auth/signup?accessToken=${token}&email=${payload.email}&role=${invitation.role}`;
+  await sendInvitationEmail(invitationLink);
 
   res.status(statusCodes.OK).json({
     message: 'Invitation sent successfully',
     success: true,
     data: invitation,
+    invitationLink,
   });
 });
 
